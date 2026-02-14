@@ -1,0 +1,819 @@
+voici le html
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MyPrescription | Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+
+
+    <style>
+        .dashboard {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2.5rem 2rem;
+        }
+
+        .dash-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 1.75rem;
+            flex-wrap: wrap;
+        }
+
+        .dash-title h1 {
+            font-size: 2rem;
+            line-height: 1.2;
+            letter-spacing: -0.5px;
+            margin-bottom: 0.25rem;
+            color: var(--text-dark);
+        }
+
+        .dash-title p {
+            color: var(--text-gray);
+            font-size: 0.95rem;
+        }
+
+        .dash-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .btn-ghost {
+            background: #ffffff;
+            color: var(--text-dark);
+            border: 1px solid var(--border-light);
+            padding: 0.8rem 1.2rem;
+            border-radius: 14px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all var(--transition-normal);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: inherit;
+        }
+
+        .btn-ghost:hover {
+            transform: translateY(-2px);
+            border-color: rgba(0, 212, 255, 0.45);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        .btn-ghost svg {
+            width: 18px;
+            height: 18px;
+            color: var(--accent-cyan);
+        }
+
+        .dash-grid {
+            display: grid;
+            grid-template-columns: 1.3fr 0.7fr;
+            gap: 1.5rem;
+            align-items: start;
+        }
+
+        .card {
+            background: #ffffff;
+            border: 1px solid var(--border-light);
+            border-radius: 22px;
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .card-title {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .card-title h2 {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            letter-spacing: -0.3px;
+        }
+
+        .card-title span {
+            font-size: 0.9rem;
+            color: var(--text-gray);
+        }
+
+        .card-body {
+            padding: 1.25rem 1.5rem;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat {
+            border-radius: 20px;
+            border: 1px solid var(--border-light);
+            padding: 1.1rem 1.1rem;
+            background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 30% 30%, rgba(0, 212, 255, 0.20), transparent 60%);
+            pointer-events: none;
+        }
+
+        .stat .label {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+            font-weight: 600;
+            position: relative;
+        }
+
+        .stat .value {
+            font-size: 1.65rem;
+            font-weight: 900;
+            color: var(--text-dark);
+            margin-top: 0.35rem;
+            position: relative;
+            letter-spacing: -0.6px;
+        }
+
+        .stat .meta {
+            margin-top: 0.4rem;
+            font-size: 0.85rem;
+            color: var(--text-gray);
+            position: relative;
+        }
+
+        .filters {
+            display: grid;
+            grid-template-columns: 1.4fr 0.8fr 0.8fr;
+            gap: 0.9rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .input-mini {
+            width: 100%;
+            padding: 0.9rem 1rem;
+            border-radius: 14px;
+            border: 1px solid var(--border-light);
+            background: #ffffff;
+            color: var(--text-dark);
+            font-family: inherit;
+            outline: none;
+            transition: all var(--transition-normal);
+        }
+
+        .input-mini:focus {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 0 4px rgba(0, 212, 255, 0.15);
+        }
+
+        .table-wrap {
+            overflow: auto;
+            border-radius: 18px;
+            border: 1px solid var(--border-light);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 900px;
+            background: #ffffff;
+        }
+
+        thead th {
+            text-align: left;
+            font-size: 0.85rem;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+            color: var(--text-gray);
+            padding: 0.9rem 1rem;
+            border-bottom: 1px solid var(--border-light);
+            background: #fbfdff;
+        }
+
+        tbody td {
+            padding: 0.95rem 1rem;
+            border-bottom: 1px solid var(--border-light);
+            color: var(--text-dark);
+            font-size: 0.95rem;
+            vertical-align: middle;
+        }
+
+        tbody tr:hover {
+            background: rgba(0, 212, 255, 0.06);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.35rem 0.7rem;
+            border-radius: 999px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            border: 1px solid var(--border-light);
+            background: #ffffff;
+            color: var(--text-dark);
+        }
+
+        .dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 999px;
+            background: var(--accent-cyan);
+            box-shadow: 0 0 0 4px rgba(0, 212, 255, 0.15);
+        }
+
+        .row-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-chip {
+            padding: 0.45rem 0.75rem;
+            border-radius: 999px;
+            border: 1px solid var(--border-light);
+            background: #ffffff;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.85rem;
+            transition: all var(--transition-normal);
+            font-family: inherit;
+        }
+
+        .btn-chip:hover {
+            transform: translateY(-2px);
+            border-color: rgba(0, 212, 255, 0.55);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .btn-chip.primary {
+            background: var(--gradient-button);
+            border: none;
+            color: var(--text-dark);
+        }
+
+        .btn-chip.danger {
+            color: #b91c1c;
+            border-color: rgba(185, 28, 28, 0.25);
+            background: rgba(185, 28, 28, 0.06);
+        }
+
+        .right-stack {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .quick-list {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .quick-item {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 0.9rem 1rem;
+            border: 1px solid var(--border-light);
+            border-radius: 18px;
+            background: #ffffff;
+            transition: all var(--transition-normal);
+        }
+
+        .quick-item:hover {
+            transform: translateY(-2px);
+            border-color: rgba(0, 212, 255, 0.5);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.07);
+        }
+
+        .q-left {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+
+        .q-left strong {
+            font-size: 0.95rem;
+            color: var(--text-dark);
+        }
+
+        .q-left span {
+            font-size: 0.85rem;
+            color: var(--text-gray);
+        }
+
+        .q-right {
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+            color: var(--text-gray);
+            font-size: 0.85rem;
+            white-space: nowrap;
+        }
+
+        .mini-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.35rem 0.7rem;
+            border-radius: 999px;
+            background: rgba(0, 212, 255, 0.12);
+            color: var(--text-dark);
+            font-weight: 800;
+            border: 1px solid rgba(0, 212, 255, 0.25);
+        }
+
+        .notice {
+            padding: 1rem 1rem;
+            border-radius: 18px;
+            border: 1px dashed rgba(0, 212, 255, 0.5);
+            background: rgba(0, 212, 255, 0.08);
+            color: var(--text-dark);
+            font-size: 0.92rem;
+        }
+
+        .notice strong {
+            color: var(--accent-cyan-dark);
+        }
+
+        @media (max-width: 1100px) {
+            .dash-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .filters {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 520px) {
+            .dashboard {
+                padding: 1.5rem 1rem;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .circle-grid {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .circle-box {
+            text-align: center;
+            flex: 1;
+        }
+
+        .progress-ring {
+            --size: 110px;
+            --thickness: 12px;
+            --track: rgba(255, 255, 255, 0.1);
+            --fill: #00d4ff;
+
+            width: var(--size);
+            height: var(--size);
+            border-radius: 50%;
+            background: conic-gradient(var(--fill) calc(var(--value) * 1%), var(--track) 0);
+            display: grid;
+            place-items: center;
+            margin: auto;
+            position: relative;
+        }
+
+        .progress-ring::before {
+            content: "";
+            position: absolute;
+            width: calc(var(--size) - (var(--thickness) * 2));
+            height: calc(var(--size) - (var(--thickness) * 2));
+            background: #111827;
+            border-radius: 50%;
+        }
+
+        .ring-center {
+            position: relative;
+            z-index: 2;
+            font-weight: 700;
+            font-size: 18px;
+            color: white;
+        }
+
+        .label {
+            margin-top: 10px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        /* Couleurs */
+        .done {
+            --fill: #22c55e;
+        }
+
+        .cancel {
+            --fill: #ef4444;
+        }
+
+        .scheduled {
+            --fill: #3b82f6;
+        }
+
+        .ring {
+            --value: 0;
+            --size: 110px;
+            --thickness: 12px;
+            --track: rgba(0, 0, 0, 0.08);
+            --fill: #00d4ff;
+
+            width: var(--size);
+            height: var(--size);
+            border-radius: 50%;
+            background: conic-gradient(var(--fill) calc(var(--value) * 1%), var(--track) 0);
+            display: grid;
+            place-items: center;
+            margin: auto;
+            position: relative;
+        }
+
+        .ring::before {
+            content: "";
+            position: absolute;
+            width: calc(var(--size) - (var(--thickness) * 2));
+            height: calc(var(--size) - (var(--thickness) * 2));
+            background: #111827;
+            border-radius: 50%;
+        }
+
+        .ring .center {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            line-height: 1.1;
+        }
+
+        .ring .percent {
+            font-weight: 800;
+            font-size: 18px;
+            color: #fff;
+        }
+
+        .ring .small {
+            font-size: 12px;
+            opacity: .85;
+            color: #fff;
+            margin-top: 4px;
+        }
+
+        .ring.done {
+            --fill: #22c55e;
+        }
+
+        .ring.cancel {
+            --fill: #ef4444;
+        }
+
+        .ring.sched {
+            --fill: #3b82f6;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="3" />
+                    </svg>
+                </div>
+                <span class="logo-text">MyPrescription</span>
+            </a>
+
+            <nav class="nav-menu">
+                <a href="dashbord.html" class="nav-link active">Dashboard</a>
+                <a href="rendvous.html" class="nav-link">Rendez-vous</a>
+                <a href="auditlogs.html" id="navAudit" class="nav-link" style="display:none;">Audit Logs</a>
+            </nav>
+
+            <div class="auth-buttons">
+                <button class="btn-signup" id="btnLogout">Déconnexion</button>
+                <button class="btn-login" id="btnNewPatient">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 5v14"></path>
+                        <path d="M5 12h14"></path>
+                    </svg>
+                    Nouveau Patient
+                </button>
+            </div>
+
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <section class="dashboard">
+
+            <!-- Top -->
+            <div class="dash-top">
+                <div class="dash-title">
+                    <h1>Dashboard</h1>
+                    <p>Bienvenue, <strong id="doctorName">Docteur</strong>. Vue d’ensemble & gestion des patients.</p>
+                    <p style="margin-top:.35rem;color:var(--text-gray);font-size:.88rem;">
+                        <span class="badge"><span class="dot"></span> <span id="apiStatusText">
+                                connecté</span></span>
+                    </p>
+                </div>
+
+                <div class="dash-actions">
+                    <button class="btn-ghost" id="btnExport" title="Exporter la liste">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        Exporter
+                    </button>
+
+                    <button class="btn-ghost" id="btnRefresh" title="Recharger depuis l'API">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 12a9 9 0 0 1-9 9 9 9 0 0 1-9-9 9 9 0 0 1 9-9 9 9 0 0 1 6.36 2.64"></path>
+                            <polyline points="21 3 21 9 15 9"></polyline>
+                        </svg>
+                        Actualiser
+                    </button>
+                </div>
+            </div>
+
+
+            <div class="stats">
+                <div class="stat">
+                    <div class="label">Patients</div>
+                    <div class="value" id="statPatients">—</div>
+                    <div class="meta" id="statPatientsMeta">Chargement…</div>
+                </div>
+
+                <div class="stat">
+                    <div class="label">Consultations</div>
+                    <div class="value" id="statConsults">—</div>
+                    <div class="meta" id="statConsultsMeta">Aujourd’hui</div>
+                </div>
+
+                <div class="stat">
+                    <div class="label">Rendez-vous</div>
+                    <div class="value" id="statAppointments">—</div>
+                    <div class="meta" id="statAppointmentsMeta">Cette semaine</div>
+                </div>
+
+                <div class="stat">
+                    <div class="label">Ordonnances</div>
+                    <div class="value" id="statRx">—</div>
+                    <div class="meta" id="statRxMeta">Ce mois</div>
+                </div>
+            </div>
+
+            <div class="dash-grid">
+                <!-- Left -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <h2>Patients</h2>
+                            <span id="resultsInfo">—</span>
+                        </div>
+
+                        <div class="row-actions">
+                            <button class="btn-chip" id="btnBulkArchive">Archiver sélection</button>
+                            <button class="btn-chip primary" id="btnNewPatient2">+ Ajouter</button>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+
+
+                        <div class="filters">
+                            <input class="input-mini" id="searchInput" type="text"
+                                placeholder="Rechercher : nom, téléphone, id, email…" />
+
+                            <select class="input-mini" id="sortBy">
+                                <option value="NAME_ASC">Trier : Nom (A→Z)</option>
+                                <option value="NAME_DESC">Trier : Nom (Z→A)</option>
+                                <option value="CREATED_DESC">Trier : Créé le (récent)</option>
+                                <option value="CREATED_ASC">Trier : Créé le (ancien)</option>
+                            </select>
+                        </div>
+
+                        <!-- Table -->
+                        <div class="table-wrap">
+                            <table id="patientsTable">
+                                <thead>
+                                    <tr>
+                                        <th style="width:42px;">
+                                            <input type="checkbox" id="selectAllPatients"
+                                                aria-label="Tout sélectionner" />
+                                        </th>
+                                        <th>ID</th>
+                                        <th>Patient</th>
+                                        <th>Né(e) le</th>
+                                        <th>Téléphone</th>
+                                        <th>Créé le</th>
+                                        <th style="min-width:230px;">Actions</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody id="patientsTbody">
+
+                                    <tr class="skeleton-row">
+                                        <td colspan="8" style="padding:1rem;color:var(--text-gray);">
+                                            Chargement des patients…
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Pagination -->
+                        <div
+                            style="display:flex;justify-content:space-between;align-items:center;margin-top:1rem;gap:1rem;flex-wrap:wrap;">
+                            <div style="color:var(--text-gray);font-size:.9rem;">
+                                Page <strong id="pageNumber">1</strong> / <strong id="pageTotal">1</strong>
+                            </div>
+
+                            <div class="row-actions">
+                                <button class="btn-chip" id="btnPrevPage">← Précédent</button>
+                                <button class="btn-chip" id="btnNextPage">Suivant →</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Right -->
+                <div class="right-stack">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <h2>Statistiques RDV</h2>
+                                <span>Par statut</span>
+                            </div>
+                        </div>
+
+                        <div class="card-body">
+
+                            <!-- ✅ IDs attendus par ton JS -->
+                            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;">
+                                <div class="mini-pill">Terminés: <strong id="doneCount">0</strong></div>
+                                <div class="mini-pill">Annulés: <strong id="cancelCount">0</strong></div>
+                                <div class="mini-pill">Planifiés: <strong id="schedCount">0</strong></div>
+                                <div class="mini-pill">Total: <strong id="totalCount1">0</strong></div>
+
+                                <!-- ton JS les met aussi: on les garde cachés -->
+                                <span id="totalCount2" style="display:none;">0</span>
+                                <span id="totalCount3" style="display:none;">0</span>
+                            </div>
+
+                            <!-- ✅ classes attendues: .ring.done / .ring.cancel / .ring.sched -->
+                            <div class="circle-grid">
+
+                                <div class="circle-box">
+                                    <div class="ring done" style="--value: 0;">
+                                        <div class="center">
+                                            <div class="percent">0%</div>
+                                            <div class="small">DONE</div>
+                                        </div>
+                                    </div>
+                                    <p class="label">Terminés</p>
+                                </div>
+
+                                <div class="circle-box">
+                                    <div class="ring cancel" style="--value: 0;">
+                                        <div class="center">
+                                            <div class="percent">0%</div>
+                                            <div class="small">CANCELLED</div>
+                                        </div>
+                                    </div>
+                                    <p class="label">Annulés</p>
+                                </div>
+
+                                <div class="circle-box">
+                                    <div class="ring sched" style="--value: 0;">
+                                        <div class="center">
+                                            <div class="percent">0%</div>
+                                            <div class="small">SCHEDULED</div>
+                                        </div>
+                                    </div>
+                                    <p class="label">Planifiés</p>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+        </section>
+    </main>
+
+    <!-- ✅ Toasts (succès/erreur) -->
+    <div id="toastArea" style="position:fixed;right:16px;bottom:16px;display:grid;gap:10px;z-index:9999;"></div>
+
+    <div id="patientModal" aria-hidden="true"
+        style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:9998;">
+        <div class="card" role="dialog" aria-modal="true"
+            style="max-width:720px;margin:6vh auto; width:calc(100% - 24px);">
+            <div class="card-header">
+                <div class="card-title">
+                    <h2 id="patientModalTitle">Nouveau patient</h2>
+                    <span>Remplis les informations et valide</span>
+                </div>
+                <button class="btn-chip" id="btnClosePatientModal">Fermer</button>
+            </div>
+
+            <div class="card-body">
+                <form id="patientForm" style="display:grid;gap:12px;">
+                    <input type="hidden" id="patientId" />
+
+                    <div class="filters" style="grid-template-columns: 1fr 1fr;">
+                        <input class="input-mini" id="firstName" placeholder="Prénom" />
+                        <input class="input-mini" id="lastName" placeholder="Nom" />
+                    </div>
+
+                    <div class="filters" style="grid-template-columns: 1fr 1fr;">
+                        <input class="input-mini" id="dateOfBirth" type="date" placeholder="Date de naissance" />
+                        <input class="input-mini" id="phone" placeholder="Téléphone" />
+                    </div>
+
+                    <div class="row-actions" style="justify-content:flex-end;">
+                        <button type="button" class="btn-chip danger" id="btnDeletePatient"
+                            style="display:none;">Supprimer</button>
+                        <button type="submit" class="btn-chip primary" id="btnSavePatient">Enregistrer</button>
+                    </div>
+
+                    <p id="formError" style="margin:0;color:#b91c1c;font-weight:700;display:none;"></p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <template id="patientRowTpl">
+        <tr>
+            <td><input type="checkbox" class="rowSelect" /></td>
+            <td class="tdId"></td>
+            <td class="tdPatient"></td>
+            <td class="tdDob"></td>
+            <td class="tdPhone"></td>
+            <td class="tdCreated"></td>
+            <td>
+                <div class="row-actions">
+                    <button class="btn-chip primary btnView">Voir</button>
+                    <button class="btn-chip btnEdit">Éditer</button>
+                    <button class="btn-chip danger btnDelete">Suppr.</button>
+                </div>
+            </td>
+        </tr>
+    </template>
+
+
+    <script src="dashboard.js"></script>
+</body>
+
+</html>

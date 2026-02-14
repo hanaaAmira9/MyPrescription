@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MyPrescription | Rendez-vous</title>
+
+    <link rel="stylesheet" href="rendvous.css">
+</head>
+
+<body>
+
+    <div id="toastArea"></div>
+
+    <div class="wrap">
+        <header class="header">
+            <div class="header-container">
+                <a href="index.html" class="logo">
+                    <div class="logo-icon">
+                        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="3" />
+                        </svg>
+                    </div>
+                    <span class="logo-text">MyPrescription</span>
+                </a>
+
+                <nav class="nav-menu">
+                    <a href="dashbord.html" class="nav-link">Dashboard</a>
+                    <a href="rendvous.html" class="nav-link active">Rendez-vous</a>
+                    <a href="auditlogs.html" id="navAudit" class="nav-link" style="display:none;">Audit Logs</a>
+                </nav>
+
+                <div class="auth-buttons">
+                    <button class="btn-login" id="btnLogout">Déconnexion</button>
+
+                </div>
+
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </header>
+
+        <div class="grid">
+            <!-- FORM -->
+            <section class="card">
+                <div class="card-h">
+                    <strong id="formTitle">Nouveau rendez-vous</strong>
+                    <span class="hint" id="editHint"></span>
+                </div>
+
+                <div class="card-b">
+                    <form id="apptForm">
+                        <input type="hidden" id="id" />
+
+                        <div class="row">
+                            <div>
+                                <label for="patient_id">Patient</label>
+                                <select id="patient_id" required>
+                                    <option value="">-- Sélectionner un patient --</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label for="doctor_id">Docteur</label>
+                                <select id="doctor_id" required>
+                                    <option value="">-- Sélectionner un docteur --</option>
+                                </select>
+                            </div>
+
+                        </div>
+
+                        <div class="row" style="margin-top:12px">
+                            <div>
+                                <label for="date_time">Date & Heure</label>
+                                <input id="date_time" type="datetime-local" required />
+                            </div>
+                            <div>
+                                <label for="status">Statut</label>
+                                <select id="status" required>
+                                    <option value="SCHEDULED">SCHEDULED</option>
+                                    <option value="DONE">DONE</option>
+                                    <option value="CANCELLED">CANCELLED</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row-1" style="margin-top:12px">
+                            <div>
+                                <label for="reason">Raison (optionnel)</label>
+                                <textarea id="reason" placeholder="ex: contrôle, fièvre, douleur..."></textarea>
+                            </div>
+                        </div>
+
+                        <div class="toolbar" style="margin-top:12px">
+                            <button class="btn" type="submit" id="saveBtn">Enregistrer</button>
+                            <button class="btn btn-ghost" type="button" id="resetBtn">Réinitialiser</button>
+                            <button class="btn btn-danger" type="button" id="deleteBtn"
+                                style="display:none">Supprimer</button>
+                        </div>
+
+                        <div class="hint" style="margin-top:10px">
+                            Astuce: cliquer sur un rendez-vous dans le tableau pour l’éditer.
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+
+            <section class="card">
+                <div class="card-h">
+                    <strong>Liste des rendez-vous</strong>
+                    <div class="muted" id="countInfo">0</div>
+                </div>
+
+                <div class="card-b">
+                    <div class="toolbar" style="margin-bottom:12px">
+                        <input id="q" class="search"
+                            placeholder="Rechercher par patient_id, doctor_id, reason, status..." />
+                        <select id="filterStatus" style="max-width:220px">
+                            <option value="">Tous statuts</option>
+                            <option value="SCHEDULED">SCHEDULED</option>
+                            <option value="DONE">DONE</option>
+                            <option value="CANCELLED">CANCELLED</option>
+                        </select>
+                        <select id="sortBy" style="max-width:220px">
+                            <option value="date_asc">Date ↑</option>
+                            <option value="date_desc">Date ↓</option>
+                            <option value="created_desc">Création ↓</option>
+                            <option value="created_asc">Création ↑</option>
+                        </select>
+                    </div>
+
+                    <div style="overflow:auto">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Patient</th>
+                                    <th>Doctor</th>
+                                    <th>Status</th>
+                                    <th>Reason</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody"></tbody>
+                        </table>
+                    </div>
+
+                    <div class="muted" style="margin-top:10px">
+                        Données stockées dans <code>localStorage</code> (clé <code>mp_appointments_v1</code>).
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="rendvous.js"></script>
+</body>
+
+</html>
