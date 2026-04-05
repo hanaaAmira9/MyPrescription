@@ -48,6 +48,16 @@ const btnReserver = document.getElementById("btnReserver");
 
 const loginForm = document.getElementById("loginForm");
 const registerForm = document.getElementById("registerForm");
+const verifyForm = document.getElementById("verifyForm");
+const forgotPasswordForm = document.getElementById("forgotPasswordForm");
+const resetPasswordForm = document.getElementById("resetPasswordForm");
+
+const forgotPwdLink = document.getElementById("forgotPwdLink");
+const backToLoginFromForgot = document.getElementById("backToLoginFromForgot");
+const backToLoginFromChoose = document.getElementById("backToLoginFromChoose");
+
+const btnChooseTOTP = document.getElementById("btnChooseTOTP");
+const btnChooseEmail = document.getElementById("btnChooseEmail");
 
 const successModal = document.getElementById("successModal");
 const modalTitle = document.getElementById("modalTitle");
@@ -67,12 +77,24 @@ function showAuth(mode = "login") {
     heroContent.classList.add("hidden");
     authSection.classList.add("active");
 
+    const choose2FAForm = document.getElementById("choose2FAForm");
+    const forms = [loginForm, registerForm, verifyForm, forgotPasswordForm, resetPasswordForm, choose2FAForm];
+    forms.forEach(f => {
+        if (f) f.classList.remove("active");
+    });
+
     if (mode === "register") {
         registerForm.classList.add("active");
-        loginForm.classList.remove("active");
+    } else if (mode === "verify") {
+        if(verifyForm) verifyForm.classList.add("active");
+    } else if (mode === "choose2fa") {
+        if(choose2FAForm) choose2FAForm.classList.add("active");
+    } else if (mode === "forgot") {
+        if(forgotPasswordForm) forgotPasswordForm.classList.add("active");
+    } else if (mode === "reset") {
+        if(resetPasswordForm) resetPasswordForm.classList.add("active");
     } else {
         loginForm.classList.add("active");
-        registerForm.classList.remove("active");
     }
 
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -80,9 +102,18 @@ function showAuth(mode = "login") {
 
 function showHome() {
     if (!heroContent || !authSection) return;
-
     heroContent.classList.remove("hidden");
     authSection.classList.remove("active");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+// Click sur le logo — retour accueil
+const logoHome = document.getElementById("logoHome");
+if (logoHome) {
+    logoHome.addEventListener("click", (e) => {
+        e.preventDefault();
+        showHome();
+    });
 }
 
 if (btnLogin) {
@@ -93,10 +124,41 @@ if (btnSignup) {
     btnSignup.addEventListener("click", () => showAuth("register"));
 }
 
-if (btnReserver) {
-    btnReserver.addEventListener("click", (e) => {
+if (forgotPwdLink) {
+    forgotPwdLink.addEventListener("click", (e) => {
         e.preventDefault();
+        showAuth("forgot");
+    });
+}
+
+if (backToLoginFromForgot) {
+    backToLoginFromForgot.addEventListener("click", (e) => {
+        e.preventDefault();
+        showAuth("login");
+    });
+}
+if (backToLoginFromChoose) {
+    backToLoginFromChoose.addEventListener("click", (e) => {
+        e.preventDefault();
+        showAuth("login");
+    });
+}
+
+// Bouton "Se connecter" dans la section hero
+const btnLogin2 = document.getElementById("btnLogin2");
+if (btnLogin2) {
+    btnLogin2.addEventListener("click", (e) => {
+        e.preventDefault();
+        showAuth("login");
+    });
+}
+
+// Bouton "Commencer maintenant" dans la section Services
+const btnGetStarted = document.getElementById("btnGetStarted");
+if (btnGetStarted) {
+    btnGetStarted.addEventListener("click", () => {
         showAuth("register");
+        window.scrollTo({ top: 0, behavior: "smooth" });
     });
 }
 
@@ -104,6 +166,10 @@ if (backHome) {
     backHome.addEventListener("click", (e) => {
         e.preventDefault();
         showHome();
+        document.querySelectorAll(".nav-link").forEach((link) => {
+            link.classList.remove("active");
+        });
+        backHome.classList.add("active");
     });
 }
 
@@ -226,6 +292,18 @@ if (loginForm) {
     toast(data.message || data.error || "Erreur de connexion", "error");
     return;
   }
+  
+  if (data.requires2FA) {
+     window.tempLoginEmail = data.email;
+     
+     if (data.methods && data.methods.length > 1) {
+         showAuth("choose2fa");
+     } else {
+         window.verifyLoginMode = "email";
+         triggerSendOTP(data.email);
+     }
+     return;
+  }
 
   toast("Connexion réussie ✅", "success");
 
@@ -247,7 +325,200 @@ if (loginForm) {
   if (btn) btn.classList.remove("loading");
 }
 
+    });
+}
 
+// Gestionnaire Helper pour envoyer OTP
+async function triggerSendOTP(email) {
+    try {
+        const response = await fetch(`${API_URL}/auth/send-otp`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email }),
+        });
+        const data = await response.json().catch(() => ({}));
+        
+        if (!response.ok) {
+            toast(data.message || data.error || "Erreur d'envoi OTP", "error");
+            return false;
+        }
+        
+        window.verifyLoginMode = "email";
+        showAuth("verify");
+        const verifySubtitle = document.getElementById("verifySubtitle");
+        if (verifySubtitle) verifySubtitle.textContent = "Un code a été envoyé par email.";
+        toast(data.message || "Code envoyé", "success");
+        return true;
+    } catch (error) {
+        toast("Erreur réseau.", "error");
+        return false;
+    }
+}
+
+if (btnChooseTOTP) {
+    btnChooseTOTP.addEventListener("click", () => {
+        window.verifyLoginMode = "totp";
+        showAuth("verify");
+        const verifySubtitle = document.getElementById("verifySubtitle");
+        if (verifySubtitle) verifySubtitle.textContent = "Veuillez entrer le code de votre Google Authenticator.";
+    });
+}
+
+if (btnChooseEmail) {
+    btnChooseEmail.addEventListener("click", async (e) => {
+        const btn = e.currentTarget;
+        const originalText = btn.innerHTML;
+        btn.innerHTML = "Envoi...";
+        btn.disabled = true;
+        
+        await triggerSendOTP(window.tempLoginEmail);
+        
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+    });
+}
+
+// Logique pour le formulaire Verify (2FA)
+if (verifyForm) {
+    verifyForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const btn = e.target.querySelector(".btn-submit");
+        if (btn) btn.classList.add("loading");
+
+        const codeInput = document.getElementById("verifyCode");
+        const code = codeInput ? codeInput.value : "";
+        const email = window.tempLoginEmail;
+
+        if (!email) {
+            toast("Erreur session, veuillez vous reconnecter.", "error");
+            showAuth("login");
+            if (btn) btn.classList.remove("loading");
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_URL}/auth/verify-login`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+                body: JSON.stringify({ email, code, method: window.verifyLoginMode }),
+            });
+
+            const data = await response.json().catch(() => ({}));
+
+            if (!response.ok) {
+                toast(data.message || data.error || "Code invalide", "error");
+                return;
+            }
+
+            toast("Connexion réussie ✅", "success");
+            verifyForm.reset();
+
+            showSuccessModal(
+                "Connexion réussie !",
+                "Authentification validée. Redirection vers votre tableau de bord..."
+            );
+
+            setTimeout(() => {
+                window.location.href = "/dashbord";
+            }, 800);
+
+        } catch (error) {
+            console.error(error);
+            toast("Erreur réseau.", "error");
+        } finally {
+            if (btn) btn.classList.remove("loading");
+        }
+    });
+}
+
+// Logique pour Forgot Password
+if (forgotPasswordForm) {
+    forgotPasswordForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const btn = e.target.querySelector(".btn-submit");
+        if (btn) btn.classList.add("loading");
+
+        const emailInput = document.getElementById("forgotEmail");
+        const email = emailInput ? emailInput.value : "";
+
+        try {
+            const response = await fetch(`${API_URL}/auth/forgot-password`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email }),
+            });
+
+            const data = await response.json().catch(() => ({}));
+
+            if (!response.ok) {
+                toast(data.message || data.error || "Erreur lors de la demande.", "error");
+                return;
+            }
+
+            toast(data.message || "Code envoyé !", "success");
+            window.resetEmail = email; // Sauvegarde tempo pour l'étape suivante
+            showAuth("reset");
+        } catch (error) {
+            console.error(error);
+            toast("Erreur réseau.", "error");
+        } finally {
+            if (btn) btn.classList.remove("loading");
+        }
+    });
+}
+
+// Logique pour Reset Password
+if (resetPasswordForm) {
+    resetPasswordForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const btn = e.target.querySelector(".btn-submit");
+        if (btn) btn.classList.add("loading");
+
+        const codeInput = document.getElementById("resetCode");
+        const newPasswordInput = document.getElementById("resetNewPassword");
+        
+        const code = codeInput ? codeInput.value : "";
+        const newPassword = newPasswordInput ? newPasswordInput.value : "";
+        const email = window.resetEmail;
+
+        if (!email) {
+            toast("Erreur session. Veuillez recommencer.", "error");
+            showAuth("forgot");
+            if (btn) btn.classList.remove("loading");
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_URL}/auth/reset-password`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, code, newPassword }),
+            });
+
+            const data = await response.json().catch(() => ({}));
+
+            if (!response.ok) {
+                if (data.details && Array.isArray(data.details)) {
+                    const messages = data.details.map((d) => `${d.message}`).join(" ");
+                    toast(messages, "error");
+                } else {
+                    toast(data.message || data.error || "Erreur de réinitialisation.", "error");
+                }
+                return;
+            }
+
+            toast(data.message || "Mot de passe mis à jour.", "success");
+            resetPasswordForm.reset();
+            showAuth("login");
+
+        } catch (error) {
+            console.error(error);
+            toast("Erreur réseau.", "error");
+        } finally {
+            if (btn) btn.classList.remove("loading");
+        }
     });
 }
 

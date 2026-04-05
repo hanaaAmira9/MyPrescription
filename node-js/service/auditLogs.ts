@@ -6,6 +6,7 @@ export type AuditEvent =
     | "AUTH_LOGIN_SUCCESS"
     | "AUTH_LOGIN_FAILED"
     | "AUTH_LOGOUT"
+    | "AUTH_PASSWORD_RESET"
     | "ACCESS_DENIED";
 
 export interface AuditEntry {

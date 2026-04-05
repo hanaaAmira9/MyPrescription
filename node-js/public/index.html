@@ -67,8 +67,8 @@
                         et celui de votre secrétaire pour vous concentrer pleinement sur vos patients.
                     </p>
                     <div class="hero-buttons">
-                        <a href="#" class="btn-primary" id="btnReserver">Réserver Maintenant</a>
-                        <a href="#" class="btn-secondary">Plus d'infos</a>
+                        <a href="#about" class="btn-login" id="btnMoreInfo">Plus d'infos</a>
+                        <a href="#" class="btn-secondary" id="btnLogin2">Se connecter</a>
                     </div>
                 </div>
 
@@ -123,7 +123,7 @@
                                     <span class="checkmark"></span>
                                     <span class="checkbox-label">Se souvenir de moi</span>
                                 </label>
-                                <a href="#" class="forgot-password">Mot de passe oublié?</a>
+                                <a href="#" class="forgot-password" id="forgotPwdLink">Mot de passe oublié?</a>
                             </div>
 
                             <button type="submit" class="btn-submit">
@@ -241,6 +241,117 @@
                             </button>
                         </form>
 
+                        <!-- Choose 2FA Form -->
+                        <form class="auth-form" id="choose2FAForm">
+                            <h2 class="form-title">Vérification de sécurité</h2>
+                            <p class="form-subtitle">Comment souhaitez-vous recevoir votre code ?</p>
+
+                            <div class="form-options" style="flex-direction: column; gap: 15px; margin-top: 20px;">
+                                <button type="button" class="btn-submit" id="btnChooseTOTP" style="background-color: #f3f4f6; color: var(--text-dark);">
+                                    <span>Application Authenticator</span>
+                                </button>
+                                <button type="button" class="btn-submit" id="btnChooseEmail">
+                                    <span>Envoyer un code par Email</span>
+                                </button>
+                            </div>
+                            
+                            <div class="form-options" style="justify-content: center; margin-top: 20px;">
+                                <a href="#" class="forgot-password" id="backToLoginFromChoose">Annuler</a>
+                            </div>
+                        </form>
+
+                        <!-- Verify Form (2FA) -->
+                        <form class="auth-form" id="verifyForm">
+                            <h2 class="form-title" id="verifyTitle">Vérification de sécurité</h2>
+                            <p class="form-subtitle" id="verifySubtitle">Veuillez entrer le code de vérification.</p>
+
+                            <div class="form-group">
+                                <label for="verifyCode" class="form-label">Code d'authentification</label>
+                                <div class="input-wrapper">
+                                    <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                    </svg>
+                                    <input type="text" id="verifyCode" class="form-input" placeholder="123456" required maxlength="6" pattern="\d{6}">
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn-submit">
+                                <span>Valider le code</span>
+                                <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                    <polyline points="12 5 19 12 12 19"></polyline>
+                                </svg>
+                            </button>
+                        </form>
+
+                        <!-- Forgot Password Form -->
+                        <form class="auth-form" id="forgotPasswordForm">
+                            <h2 class="form-title">Mot de passe oublié</h2>
+                            <p class="form-subtitle">Entrez votre email pour recevoir un code de réinitialisation.</p>
+
+                            <div class="form-group">
+                                <label for="forgotEmail" class="form-label">Adresse email</label>
+                                <div class="input-wrapper">
+                                    <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                        <polyline points="22,6 12,13 2,6"></polyline>
+                                    </svg>
+                                    <input type="email" id="forgotEmail" class="form-input" placeholder="votreemail@exemple.com" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-options">
+                                <a href="#" class="forgot-password" id="backToLoginFromForgot">Retour à la connexion</a>
+                            </div>
+
+                            <button type="submit" class="btn-submit">
+                                <span>Envoyer le code</span>
+                                <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                    <polyline points="12 5 19 12 12 19"></polyline>
+                                </svg>
+                            </button>
+                        </form>
+
+                        <!-- Reset Password Form -->
+                        <form class="auth-form" id="resetPasswordForm">
+                            <h2 class="form-title">Changer le mot de passe</h2>
+                            <p class="form-subtitle">Entrez le code reçu et votre nouveau mot de passe.</p>
+
+                            <div class="form-group">
+                                <label for="resetCode" class="form-label">Code reçu</label>
+                                <div class="input-wrapper">
+                                    <input type="text" id="resetCode" class="form-input" placeholder="123456" required maxlength="6" pattern="\d{6}">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="resetNewPassword" class="form-label">Nouveau mot de passe</label>
+                                <div class="input-wrapper">
+                                    <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                    </svg>
+                                    <input type="password" id="resetNewPassword" class="form-input" placeholder="••••••••" required>
+                                    <button type="button" class="toggle-password" data-target="resetNewPassword">
+                                        <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                            <circle cx="12" cy="12" r="3"></circle>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn-submit">
+                                <span>Mettre à jour</span>
+                                <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                    <polyline points="12 5 19 12 12 19"></polyline>
+                                </svg>
+                            </button>
+                        </form>
+
                     </div>
                 </div>
 
@@ -264,6 +375,101 @@
                 </div>
             </div>
         </section>
+
+        <!-- About Section -->
+        <section id="about" style="padding: 6rem 2rem; background: #ffffff;">
+            <div style="max-width: 1100px; margin: 0 auto;">
+                <div style="text-align: center; margin-bottom: 4rem;">
+                    <span style="display: inline-block; background: rgba(0,212,255,0.1); color: var(--accent-cyan-dark, #0099bb); border: 1px solid rgba(0,212,255,0.3); border-radius: 999px; padding: 0.4rem 1.1rem; font-size: 0.82rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 1rem;">À PROPOS</span>
+                    <h2 style="font-size: 2.5rem; font-weight: 800; color: var(--text-dark, #0d1117); letter-spacing: -1px; line-height: 1.15; margin-bottom: 1rem;">Une plateforme conçue <br><span style="background: linear-gradient(90deg, #00d4ff, #0056cc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">pour les médecins</span></h2>
+                    <p style="font-size: 1.1rem; color: var(--text-gray, #64748b); max-width: 600px; margin: 0 auto; line-height: 1.75;">MyPrescription est un outil professionnel tout-en-un qui centralise la gestion de vos patients, ordonnances et rendez-vous dans une interface moderne et sécurisée.</p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem;">
+                    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 22px; padding: 2rem; transition: all 0.3s;" onmouseover="this.style.boxShadow='0 20px 40px rgba(0,0,0,0.08)'; this.style.transform='translateY(-4px)'" onmouseout="this.style.boxShadow='none'; this.style.transform='translateY(0)'">
+                        <div style="width: 52px; height: 52px; background: linear-gradient(135deg, #00d4ff22, #0056cc22); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0099bb" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        </div>
+                        <h3 style="font-size: 1.1rem; font-weight: 700; color: #0d1117; margin-bottom: 0.5rem;">Sécurité maximale</h3>
+                        <p style="color: #64748b; font-size: 0.95rem; line-height: 1.6;">Authentification double facteur (2FA), chiffrement des données et journaux d'audit complets pour protéger vos informations médicales.</p>
+                    </div>
+
+                    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 22px; padding: 2rem; transition: all 0.3s;" onmouseover="this.style.boxShadow='0 20px 40px rgba(0,0,0,0.08)'; this.style.transform='translateY(-4px)'" onmouseout="this.style.boxShadow='none'; this.style.transform='translateY(0)'">
+                        <div style="width: 52px; height: 52px; background: linear-gradient(135deg, #00d4ff22, #0056cc22); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0099bb" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        </div>
+                        <h3 style="font-size: 1.1rem; font-weight: 700; color: #0d1117; margin-bottom: 0.5rem;">Gestion des patients</h3>
+                        <p style="color: #64748b; font-size: 0.95rem; line-height: 1.6;">Enregistrez, suivez et accédez à vos informations patient instantanément. Recherche rapide et historique complet disponibles en un clic.</p>
+                    </div>
+
+                    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 22px; padding: 2rem; transition: all 0.3s;" onmouseover="this.style.boxShadow='0 20px 40px rgba(0,0,0,0.08)'; this.style.transform='translateY(-4px)'" onmouseout="this.style.boxShadow='none'; this.style.transform='translateY(0)'">
+                        <div style="width: 52px; height: 52px; background: linear-gradient(135deg, #00d4ff22, #0056cc22); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0099bb" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        </div>
+                        <h3 style="font-size: 1.1rem; font-weight: 700; color: #0d1117; margin-bottom: 0.5rem;">Rendez-vous intelligents</h3>
+                        <p style="color: #64748b; font-size: 0.95rem; line-height: 1.6;">Planification fluide des consultations, suivi du statut et rappels automatiques. Zéro double réservation, planning toujours à jour.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Services Section -->
+        <section id="services" style="padding: 6rem 2rem; background: linear-gradient(135deg, #f0f9ff 0%, #e8f4fd 100%);">
+            <div style="max-width: 1100px; margin: 0 auto;">
+                <div style="text-align: center; margin-bottom: 4rem;">
+                    <span style="display: inline-block; background: rgba(0,212,255,0.1); color: var(--accent-cyan-dark, #0099bb); border: 1px solid rgba(0,212,255,0.3); border-radius: 999px; padding: 0.4rem 1.1rem; font-size: 0.82rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 1rem;">SERVICES</span>
+                    <h2 style="font-size: 2.5rem; font-weight: 800; color: var(--text-dark, #0d1117); letter-spacing: -1px; line-height: 1.15; margin-bottom: 1rem;">Tout ce dont vous <br><span style="background: linear-gradient(90deg, #00d4ff, #0056cc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">avez besoin, réuni</span></h2>
+                    <p style="font-size: 1.1rem; color: var(--text-gray, #64748b); max-width: 600px; margin: 0 auto; line-height: 1.75;">Un écosystème complet pour votre cabinet médical, pensé pour minimiser les tâches administratives et maximiser le temps de soin.</p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 22px; padding: 1.75rem 2rem; display: flex; gap: 1.25rem; align-items: flex-start; transition: all 0.3s; box-shadow: 0 2px 12px rgba(0,0,0,0.04);" onmouseover="this.style.boxShadow='0 20px 40px rgba(0,0,0,0.1)'; this.style.borderColor='rgba(0,212,255,0.4)'" onmouseout="this.style.boxShadow='0 2px 12px rgba(0,0,0,0.04)'; this.style.borderColor='#e2e8f0'">
+                        <div style="flex-shrink: 0; width: 44px; height: 44px; background: linear-gradient(135deg, #00d4ff, #0056cc); border-radius: 14px; display: flex; align-items: center; justify-content: center;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
+                        </div>
+                        <div>
+                            <h3 style="font-size: 1rem; font-weight: 700; color: #0d1117; margin-bottom: 0.35rem;">Ordonnances numériques</h3>
+                            <p style="color: #64748b; font-size: 0.9rem; line-height: 1.6; margin: 0;">Créez et archivez vos prescriptions en quelques secondes. Consultation de l'historique médicamenteux à tout moment.</p>
+                        </div>
+                    </div>
+
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 22px; padding: 1.75rem 2rem; display: flex; gap: 1.25rem; align-items: flex-start; transition: all 0.3s; box-shadow: 0 2px 12px rgba(0,0,0,0.04);" onmouseover="this.style.boxShadow='0 20px 40px rgba(0,0,0,0.1)'; this.style.borderColor='rgba(0,212,255,0.4)'" onmouseout="this.style.boxShadow='0 2px 12px rgba(0,0,0,0.04)'; this.style.borderColor='#e2e8f0'">
+                        <div style="flex-shrink: 0; width: 44px; height: 44px; background: linear-gradient(135deg, #00d4ff, #0056cc); border-radius: 14px; display: flex; align-items: center; justify-content: center;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.72 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.63 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                        </div>
+                        <div>
+                            <h3 style="font-size: 1rem; font-weight: 700; color: #0d1117; margin-bottom: 0.35rem;">Notifications & rappels</h3>
+                            <p style="color: #64748b; font-size: 0.9rem; line-height: 1.6; margin: 0;">Envoi automatique de rappels de rendez-vous par email. Réduisez les absences et optimisez votre agenda médical.</p>
+                        </div>
+                    </div>
+
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 22px; padding: 1.75rem 2rem; display: flex; gap: 1.25rem; align-items: flex-start; transition: all 0.3s; box-shadow: 0 2px 12px rgba(0,0,0,0.04);" onmouseover="this.style.boxShadow='0 20px 40px rgba(0,0,0,0.1)'; this.style.borderColor='rgba(0,212,255,0.4)'" onmouseout="this.style.boxShadow='0 2px 12px rgba(0,0,0,0.04)'; this.style.borderColor='#e2e8f0'">
+                        <div style="flex-shrink: 0; width: 44px; height: 44px; background: linear-gradient(135deg, #00d4ff, #0056cc); border-radius: 14px; display: flex; align-items: center; justify-content: center;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                        </div>
+                        <div>
+                            <h3 style="font-size: 1rem; font-weight: 700; color: #0d1117; margin-bottom: 0.35rem;">Statistiques & audit</h3>
+                            <p style="color: #64748b; font-size: 0.9rem; line-height: 1.6; margin: 0;">Visualisez vos données en temps réel. Logs d'audit complets pour une traçabilité totale de toutes les actions dans la plateforme.</p>
+                        </div>
+                    </div>
+
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 22px; padding: 1.75rem 2rem; display: flex; gap: 1.25rem; align-items: flex-start; transition: all 0.3s; box-shadow: 0 2px 12px rgba(0,0,0,0.04);" onmouseover="this.style.boxShadow='0 20px 40px rgba(0,0,0,0.1)'; this.style.borderColor='rgba(0,212,255,0.4)'" onmouseout="this.style.boxShadow='0 2px 12px rgba(0,0,0,0.04)'; this.style.borderColor='#e2e8f0'">
+                        <div style="flex-shrink: 0; width: 44px; height: 44px; background: linear-gradient(135deg, #00d4ff, #0056cc); border-radius: 14px; display: flex; align-items: center; justify-content: center;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        </div>
+                        <div>
+                            <h3 style="font-size: 1rem; font-weight: 700; color: #0d1117; margin-bottom: 0.35rem;">Accès multi-utilisateurs</h3>
+                            <p style="color: #64748b; font-size: 0.9rem; line-height: 1.6; margin: 0;">Médecins, assistants et administrateurs avec des rôles distincts et des permissions granulaires pour un accès sécurisé et contrôlé.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 3rem;">
+                    <button id="btnGetStarted" style="background: linear-gradient(135deg, #00d4ff, #0056cc); color: white; border: none; border-radius: 14px; padding: 1rem 2.5rem; font-size: 1rem; font-weight: 700; cursor: pointer; font-family: inherit; transition: all 0.3s; box-shadow: 0 8px 24px rgba(0,86,204,0.3);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 14px 32px rgba(0,86,204,0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 24px rgba(0,86,204,0.3)'">Commencer maintenant &rarr;</button>
+                </div>
+            </div>
+        </section>
+
     </main>
 
     <!-- Success Modal -->

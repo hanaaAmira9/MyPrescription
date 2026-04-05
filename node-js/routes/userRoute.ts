@@ -7,11 +7,14 @@ import {
   deleteUser,
   getMe,
   getDoctors,
+  generate2FA,
+  enable2FA,
 } from "../controller/userController";
 
 import { validateBody, validateQuery } from "../middleware/validateMiddleware";
 import { authMiddleware } from "../middleware/authMiddleware";
 import { CreateUserSchema } from "../dto/UserDto";
+import { Enable2FASchema } from "../dto/authDto";
 import { IdSchema } from "../dto/idDto";
 import { authorizePermission } from "../middleware/permissionMiddleware";
 
@@ -21,9 +24,13 @@ router.get("/me", authMiddleware, authorizePermission("user:read_me"), getMe);
 router.get("/doctors", authMiddleware, authorizePermission("user:read"), getDoctors);
 router.post("/", validateBody(CreateUserSchema), createUser);
 router.get("/", authMiddleware, authorizePermission("user:read"), getUsers);
+router.post("/2fa/generate", authMiddleware, generate2FA);
+router.post("/2fa/enable", authMiddleware, validateBody(Enable2FASchema), enable2FA);
+
 router.get("/:id", validateQuery(IdSchema), authMiddleware, authorizePermission("user:read"), getUserById);
 
 router.put("/:id", validateQuery(IdSchema), authMiddleware, authorizePermission("user:read"), updateUser);
 router.delete("/:id", validateQuery(IdSchema), authMiddleware, authorizePermission("user:read"), deleteUser);
+
 
 export default router;

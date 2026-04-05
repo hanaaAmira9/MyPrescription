@@ -142,6 +142,13 @@ const phone = $("phone");
 const btnDeletePatient = $("btnDeletePatient");
 const patientModalTitle = $("patientModalTitle");
 
+const btnSecurity = $("btnSecurity");
+const securityModal = $("securityModal");
+const btnCloseSecurityModal = $("btnCloseSecurityModal");
+const qrCodeImg = $("qrCodeImg");
+const totpCodeInput = $("totpCodeInput");
+const btnEnable2FA = $("btnEnable2FA");
+
 
 const statPatients = $("statPatients");
 const statPatientsMeta = $("statPatientsMeta");
@@ -172,7 +179,47 @@ $("btnLogout")?.addEventListener("click", async () => {
     try {
         await apiFetch("/auth/logout", { method: "POST" });
     } finally {
+        localStorage.clear();
+        sessionStorage.clear();
         window.location.href = "/index.html";
+    }
+});
+
+btnSecurity?.addEventListener("click", async () => {
+    if (!securityModal) return;
+    securityModal.style.display = "flex";
+    if (totpCodeInput) totpCodeInput.value = "";
+    if (qrCodeImg) qrCodeImg.style.display = "none";
+    
+    try {
+        const data = await apiFetch("/users/2fa/generate", { method: "POST" });
+        if(data.qrCode && qrCodeImg) {
+           qrCodeImg.src = data.qrCode;
+           qrCodeImg.style.display = "block";
+        }
+    } catch(e) {
+        toast("Erreur lors de la génération du QR Code", "error");
+    }
+});
+
+btnCloseSecurityModal?.addEventListener("click", () => {
+    if (securityModal) securityModal.style.display = "none";
+});
+
+btnEnable2FA?.addEventListener("click", async () => {
+    if (!totpCodeInput) return;
+    const code = totpCodeInput.value.trim();
+    if (code.length !== 6) return toast("Le code doit contenir 6 chiffres", "error");
+    
+    try {
+        await apiFetch("/users/2fa/enable", { 
+            method: "POST", 
+            body: JSON.stringify({ token: code })
+        });
+        toast("Google Authenticator activé avec succès ! ✅", "success");
+        if (securityModal) securityModal.style.display = "none";
+    } catch(e) {
+        toast("Code incorrect ou expiré. Réessayez.", "error");
     }
 });
 

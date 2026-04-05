@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import { CreateUserDTO } from "../dto/UserDto";
 import { AuthRequest } from "../middleware/authMiddleware";
 import { pool } from "../db/pool";
+import { generateTOTPSecret, generateQRCode, verifyTOTPToken } from "../utils/totpService";
 
 
 export async function createUser(req: Request, res: Response) {
@@ -76,7 +77,7 @@ export async function getUserById(req: Request, res: Response) {
 
 export async function findUserByEmail(email: string) {
     const result = await pool.query(
-        `SELECT id, email, password, firstname, lastname, role
+        `SELECT id, email, password, firstname, lastname, role, two_factor_secret, two_factor_enabled, otp_code, otp_expires_at
      FROM users
      WHERE email = $1
      LIMIT 1`,
@@ -88,7 +89,7 @@ export async function findUserByEmail(email: string) {
 
 export async function findUserById(id: string) {
     const result = await pool.query(
-        `SELECT id, email, password , firstname, lastname, role, created_at
+        `SELECT id, email, password, firstname, lastname, role, created_at, two_factor_secret, two_factor_enabled, otp_code, otp_expires_at
      FROM users
      WHERE id = $1
      LIMIT 1`,
@@ -221,5 +222,57 @@ export async function getDoctors(req: Request, res: Response) {
     } catch (error) {
         console.error("Error getting users:", error);
         return res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+export async function generate2FA(req: AuthRequest, res: Response) {
+    try {
+        const userId = req.user?.id;
+        if (!userId) return res.status(401).json({ message: "Non authentifié" });
+
+        const user = await findUserById(userId);
+        if (!user) return res.status(404).json({ message: "Utilisateur introuvable" });
+
+        const { secret, otpauthUrl } = generateTOTPSecret(user.email);
+        const qrCodeDataUrl = await generateQRCode(otpauthUrl);
+
+        await pool.query(
+            "UPDATE users SET two_factor_secret = $1 WHERE id = $2",
+            [secret, userId]
+        );
+
+        return res.json({ secret, qrCode: qrCodeDataUrl });
+    } catch (error) {
+        console.error("Erreur generate2FA:", error);
+        return res.status(500).json({ message: "Erreur lors de la génération 2FA" });
+    }
+}
+
+export async function enable2FA(req: AuthRequest, res: Response) {
+    try {
+        const userId = req.user?.id;
+        const { token } = req.body;
+
+        if (!userId) return res.status(401).json({ message: "Non authentifié" });
+
+        const user = await findUserById(userId);
+        if (!user || !user.two_factor_secret) {
+            return res.status(400).json({ message: "2FA non initialisé" });
+        }
+
+        const isValid = verifyTOTPToken(token, user.two_factor_secret);
+        if (!isValid) {
+            return res.status(400).json({ message: "Code TOTP invalide" });
+        }
+
+        await pool.query(
+            "UPDATE users SET two_factor_enabled = true WHERE id = $1",
+            [userId]
+        );
+
+        return res.json({ message: "Authentification à deux facteurs activée avec succès" });
+    } catch (error) {
+        console.error("Erreur enable2FA:", error);
+        return res.status(500).json({ message: "Erreur lors de l'activation 2FA" });
     }
 }
